@@ -85,7 +85,7 @@ List<T>::~List(){
 
 // construtor de copia
 template<class T> 
-List<T>::List<T>(const List& L){
+List<T>::List(const List& L){
     *this = L;
 }
 
@@ -198,7 +198,12 @@ Node<T>* List<T>::erase(Node<T> *it){
         }
     }
     else
-        cerr << "Impossivel remover o elemento da Lista." << endl;    
+	{
+        cerr << "Impossivel remover o elemento da Lista." << endl;
+		throw 20;
+	}
+
+	return NULL;
 }
 
 
@@ -217,7 +222,10 @@ void List<T>::erase(const T &value){
         }
     }
     else
-        cerr << "Lista Vazia! Impossivel remover o elemento da Lista." << endl;    
+	{
+        cerr << "Lista Vazia! Impossivel remover o elemento da Lista." << endl;
+		throw 20;
+	}
 }
 
 // sobrecarga do operador de atribuição
