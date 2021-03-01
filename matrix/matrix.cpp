@@ -1,5 +1,6 @@
 // matrix.cpp
 #include <stdexcept>
+#include <sstream>
 
 #include "matrix.h"
 
@@ -36,15 +37,22 @@ Matrix<T>::Matrix()
 // }
 
 template<class T>
+void Matrix<T>::allocate(const int rows, const int cols)
+{
+    // Aloca memória para a matriz
+    // matrix = new double*[rowNum];
+	matrix = new T*[rowNum];
+    for (int i = 0; i < rowNum; i++)
+        // matrix[i] = new double[colNum];
+		matrix[i] = new T[colNum];
+}
+
+template<class T>
 Matrix<T>::Matrix(int rows, int cols)
 {
     rowNum = rows;
     colNum = cols;
-
-    // Aloca memória para a matriz
-    matrix = new double*[rowNum];
-    for (int i = 0; i < rowNum; i++)
-        matrix[i] = new double[colNum];
+	allocate(rows, cols);
 }
 
 template<class T>
@@ -52,26 +60,22 @@ Matrix<T>::Matrix(int rows, int cols, const T& valor)
 {
     rowNum = rows;
     colNum = cols;
-
-    // Aloca memória para a matriz
-    matrix = new double*[rowNum];
-    for (int i = 0; i < rowNum; i++)
-        matrix[i] = new double[colNum];
+	allocate(rows, cols);
 
     // Assinala elem para toda a matriz
     for (int i = 0; i < rowNum; i++)
     {
         for (int j = 0; j < colNum; j++)
-            matrix[i][j] = *valor;
+            matrix[i][j] = valor;
     }
 }
 
 template<class T>
 Matrix<T>::Matrix(const Matrix &matrix)
 {
-    rowNum = matrix.getRows();
-    colNum = matrix.getCols();
-    this.matrix = matrix;
+    rowNum = matrix.rows();
+    colNum = matrix.cols();
+    this->matrix = matrix.matrix;
 }
 
 // Destrutor
@@ -132,23 +136,39 @@ Matrix<T> Matrix<T>::transpose()
 // }
 
 template<class T>
-T& Matrix<T>::operator()(cont int row, cont int col) const
+T& Matrix<T>::operator()(const int row, const int col) const
 {
-    if ((rowNum <= row) || (colNum <= col))
+    if ((rowNum <= row ) || (colNum <= col))
         throw std::invalid_argument("Index out of bounds.");
 
-    return *(matrix[row][col]);
+    return matrix[row][col];
+}
+
+template <class T>
+void Matrix<T>::zeros()
+{
+	for (int i = 0; i < rowNum; i++)
+	{
+		for (int j = 0; j < colNum; j++)
+			matrix[i][j] = 0;
+	}
 }
 
 template <class T>
 ostream& operator<<(ostream &os, const Matrix<T> &matrix)
 {
-    for (int i = 0; i < rowNum; i++)
+    for (int i = 0; i < matrix.rows(); i++)
     {
-        for (int j = 0; j < colNum; j++)
+        for (int j = 0; j < matrix.cols(); j++)
             os << matrix(i, j) << " ";
         os << endl;
     }
 
     return os;
 }
+
+template class Matrix<double>;
+template class Matrix<float>;
+template ostream& operator<<(ostream&, const Matrix<double>&);
+template ostream& operator<<(ostream&, const Matrix<float>&);
+
